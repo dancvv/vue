@@ -14,7 +14,7 @@
         <td>{{ user.name }}</td>
         <td>{{ user.age }}</td>
         <td>{{ user.bir }}</td>
-        <td><a href="javascript:;" @click="delRow(user.id)">删除</a><a href="">修改</a> </td>
+        <td><a href="javascript:;" @click="delRow(user.id)">删除</a><a :href="'#/user/edit?id='+user.id">修改</a> </td>
       </tr>
     </table>
     <a href="#/user/add">添加</a>
@@ -29,14 +29,23 @@ export default {
   data(){
     let users;
     return{
-      users
+      users:[]
     }
   },
   methods:{
+    findAll(){
+      this.$http.get("http://rap2api.taobao.org/app/mock/287858/user/findall").then((res)=>{
+        this.users=res.data.results;
+      })
+    },
     delRow(id){
       console.log(id);
-      this.$http.get("url?id="+id).then(res=>{
-        console.log()
+      this.$http.get("http://rap2api.taobao.org/app/mock/287858/user/dlete?id="+id).then(res=>{
+        console.log(res);
+        if(res.data.success){
+          alert("shanchuchengogn")
+          this.findAll();
+        }
       })
     }
   },

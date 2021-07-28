@@ -4,6 +4,7 @@ import home from "../components/home";
 import student from "../components/student";
 import user from "../components/user";
 import userAdd from "../components/userAdd";
+import UserEdit from "../components/UserEdit";
 
 Vue.use(Router)
 
@@ -19,7 +20,9 @@ export default new Router({
       component:user,
       children:[{
         path: 'add', component: userAdd//用户添加路由
-      }],
+        },
+        {path:'edit',component:UserEdit},
+        ],
     },
     {
       path:'/student',
