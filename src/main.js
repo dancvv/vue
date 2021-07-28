@@ -3,12 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios'
+//在脚手架中安装axios，采用npm
 
+Vue.prototype.$http=axios; //修改内部的$http为axios $http.get("") .post()
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+
 new Vue({
-  el: '#app',
+  el: '#aqq',
   router,
   components: { App },
   template: '<App/>'

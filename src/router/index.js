@@ -1,28 +1,34 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import home from '../components/home'
-import user from '../components/user'
-import service from "../components/service";
+import home from "../components/home";
+import student from "../components/student";
+import user from "../components/user";
+import userAdd from "../components/userAdd";
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+
     {
       path:'/',
-      redirect:'/home'
-    },
-    {
-      path:'/home',
       component:home
     },
     {
       path:'/user',
-      component:user
+      component:user,
+      children:[{
+        path: 'add', component: userAdd//用户添加路由
+      }],
     },
     {
-      path:'/service',
-      component:service
-    }
-  ]
+      path:'/student',
+      component:student
+    },
+    // {
+    //   path:'/useradd',
+    //   component:userAdd
+    // },
+    ]
+
 })

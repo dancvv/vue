@@ -1,19 +1,14 @@
 <template>
 <div>
-  <h1>Home page</h1>
-  main body
-  <VFooter></VFooter>
+  <h1>欢迎来到网站</h1>
+
 </div>
 </template>
 
 <script>
-import VFooter from "./VFooter";
+
 export default {
   name: "home",
-  components: {VFooter},
-  // comments:{
-  //   footer //introduce others' link
-  // }
 }
 </script>
 
