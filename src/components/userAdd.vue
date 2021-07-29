@@ -24,7 +24,7 @@ export default {
       // console.log(this.user);
     //  发送axios请求
     //  此处出现错误是由于链接请求方式为get
-      this.$http.post("http://rap2api.taobao.org/app/mock/287858/user/add",this.user).then(res=>{
+      this.$http.post("http://localhost:8089/user/add",this.user).then(res=>{
         console.log(res)
         if(res.data.success){
           this.$router.push("/user");//切换路由

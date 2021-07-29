@@ -22,13 +22,13 @@ export default {
   },
   methods:{
     findOne(){
-      this.$http.get("http://rap2api.taobao.org/app/mock/287858/user/one?id="+this.user.id).then(res=>{
+      this.$http.get("http://localhost:8089/user/one?id="+this.user.id).then(res=>{
         console.log(res.data);
         this.user=res.data;
       })
     },
     editUserInfo(){
-      this.$http.post("http://rap2api.taobao.org/app/mock/287858/user/update").then(res=>{
+      this.$http.post("http://localhost:8089/user/update").then(res=>{
         console.log(res);
         if (res.data.success){
           this.$router.push("/user");
