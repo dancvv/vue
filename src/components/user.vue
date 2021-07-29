@@ -34,13 +34,13 @@ export default {
   },
   methods:{
     findAll(){
-      this.$http.get("http://rap2api.taobao.org/app/mock/287858/user/findall").then((res)=>{
+      this.$http.get("http://localhost:8089/user/findall").then((res)=>{
         this.users=res.data.results;
       })
     },
     delRow(id){
       console.log(id);
-      this.$http.get("http://rap2api.taobao.org/app/mock/287858/user/dlete?id="+id).then(res=>{
+      this.$http.get("http://localhost:8089/user/dlete?id="+id).then(res=>{
         console.log(res);
         if(res.data.success){
           alert("shanchuchengogn")
@@ -51,7 +51,7 @@ export default {
   },
   components:{},
   created(){
-    this.$http.get("http://rap2api.taobao.org/app/mock/287858/user/findall",{
+    this.$http.get("http://localhost:8089/user/findall",{
       params:{
         total:1,
         totalpage:1
