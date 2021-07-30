@@ -6,6 +6,7 @@
 <!--    <a href="#/user/add">添加</a>-->
     <a href="#/button">点击显示按钮</a>
     <a href="#/layout">layout布局</a>
+    <a href="#/container">容器布局组件</a>
     <br>
 
     <router-view></router-view>
