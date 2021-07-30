@@ -40,11 +40,14 @@ export default {
     },
     delRow(id){
       console.log(id);
-      this.$http.get("http://localhost:8089/user/dlete?id="+id).then(res=>{
+      //此处出现bug是由于delete拼写不完整，与后端路径不匹配
+      this.$http.get("http://localhost:8089/user/delete?id="+id).then(res=>{
         console.log(res);
         if(res.data.success){
-          alert("shanchuchengogn")
+          alert("删除成功")
           this.findAll();
+        }else {
+          alert("检查输入")
         }
       })
     }
