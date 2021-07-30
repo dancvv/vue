@@ -2,9 +2,10 @@
 <div>
   <h2>Edit user info</h2>
   <form action="">
-    Name:<input type="text"><br>
-    age:<input type="text"><br>
-    bir:<input type="text"><br>
+    id:<input type="text" v-model="user.id"><br>
+    Name:<input type="text" v-model="user.name"><br>
+    age:<input type="text" v-model="user.age"><br>
+    bir:<input type="text" v-model="user.bir"><br>
     <input type="button" @click="editUserInfo" value="Edit">
   </form>
 </div>
@@ -23,14 +24,16 @@ export default {
   methods:{
     findOne(){
       this.$http.get("http://localhost:8089/user/one?id="+this.user.id).then(res=>{
-        console.log(res.data);
+        // console.log(res.data);
         this.user=res.data;
       })
     },
     editUserInfo(){
-      this.$http.post("http://localhost:8089/user/update").then(res=>{
-        console.log(res);
+      // 发送实体对象需要把实体对象加载axios后面
+      this.$http.post("http://localhost:8089/user/update",this.user).then(res=>{
+        // console.log(res);
         if (res.data.success){
+          alert("更新成功")
           this.$router.push("/user");
         }
       })
