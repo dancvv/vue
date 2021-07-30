@@ -4,7 +4,12 @@
     <router-link to="/user">用户管理</router-link>
     <router-link to="/student">学生管理</router-link>
 <!--    <a href="#/user/add">添加</a>-->
+    <a href="#/button">点击显示按钮</a>
+    <a href="#/layout">layout布局</a>
+    <br>
+
     <router-view></router-view>
+
   </div>
 </template>
 
@@ -15,5 +20,12 @@ export default {
 </script>
 
 <style>
-
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 </style>

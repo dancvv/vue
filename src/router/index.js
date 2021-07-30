@@ -5,33 +5,22 @@ import student from "../components/student";
 import user from "../components/user";
 import userAdd from "../components/userAdd";
 import UserEdit from "../components/UserEdit";
+import button from "../components/button";
+import layout from "../components/layout";
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-
-    {
-      path:'/',
-      component:home
-    },
-    {
-      path:'/user',
-      component:user,
+    {path:'/', component:home},
+    {path:'/user', component:user,
       children:[{
         path: 'add', component: userAdd//用户添加路由
         },
-        {path:'edit',component:UserEdit},
-        ],
-    },
-    {
-      path:'/student',
-      component:student
-    },
-    // {
-    //   path:'/useradd',
-    //   component:userAdd
-    // },
-    ]
+        {path:'edit',component:UserEdit},],},
+    {path:'/student', component:student},
+    {path:'/button', component:button},
+    {path:'/layout',component:layout}
+  ]
 
 })
