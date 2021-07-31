@@ -8,6 +8,7 @@ import UserEdit from "../components/UserEdit";
 import button from "../components/button";
 import layout from "../components/layout";
 import contaniner from "../components/contaniner";
+import element from "../components/element";
 
 Vue.use(Router)
 
@@ -22,7 +23,8 @@ export default new Router({
     {path:'/student', component:student},
     {path:'/button', component:button},
     {path:'/layout',component:layout},
-    {path:'/container',component:contaniner}
+    {path:'/container',component:contaniner},
+    {path:'/element',component:element}
   ]
 
 })
