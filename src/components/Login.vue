@@ -58,7 +58,7 @@ export default {
         console.log(valid)
         if(!valid) return;
         //发送表单数据,返回的是promise
-        const res = await this.$http.post('login',this.loginForm);
+        const res = await this.$http.post('login',this .loginForm);
         console.log(res);
       })
     }
