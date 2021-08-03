@@ -54,13 +54,27 @@ export default {
     },
     //表单预验证
     login(){
+      //表單預驗證，檢測輸入是否符合格式要求
       this.$refs.loginFormRef.validate(async (valid)=>{
-        console.log(valid)
+        // console.log(valid)
         if(!valid) return;
         //发送表单数据,返回的是promise
-        const res = await this.$http.post('login',this .loginForm);
+        const {data:res} = await this.$http.post('login',this .loginForm);
+        //打印接收的數據
         console.log(res);
-      })
+        if(res.meta.status!==200){
+          //判斷不成功，執行語句
+          // alert("wrong password or error user name")
+          // return console.log("error");
+          return this.$message.error('error message')
+        }else {
+          console.log("success")
+          //保存token
+          window.sessionStorage.setItem("token",res.data.token);
+          this.$router.push("/home");
+          return this.$message.success('success message')
+        }
+      });
     }
   },
 
