@@ -3,16 +3,19 @@
   <div class="login_box">
     <img src="../assets/logo.png" width="100">
 <!--    登录表单区域-->
-    <el-form label-width="0px" class="login_form">
-      <el-form-item>
-        <el-input prefix-icon="el-icon-user-solid"></el-input>
+<!--    loginFormRef表单的实例-->
+<!--    访问实例-->
+    <el-form :model="loginForm" :rules="loginFormRules" ref="loginFormRef" label-width="0px" class="login_form">
+      <el-form-item prop="username">
+        <el-input prefix-icon="el-icon-user-solid" v-model="loginForm.username"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-input prefix-icon="el-icon-lock"></el-input>
+      <el-form-item prop="password">
+        <el-input prefix-icon="el-icon-lock" v-model="loginForm.password" type="password"></el-input>
       </el-form-item>
+
       <el-form-item class="btns">
-        <el-button type="primary">登录</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button type="primary" @click="login">登录</el-button>
+        <el-button type="info" @click="resetLoginForm">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -21,7 +24,46 @@
 
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  data(){
+    return{
+      //登录表单数据
+      loginForm:{
+        username:"admin",
+        password:"123456"
+      },
+    //  表单的验证规则
+      loginFormRules:{
+        username:[
+          {required:true,message:"请输入登录名",trigger:"blur"},
+          {min:3,max:10,message: "长度在3~10个字符",trigger: "blur"}],
+        password: [
+          {required:true,message:"请输入登录密码",trigger:"blur"},
+          {min:6,max:10,message: "长度在6~10个字符",trigger: "blur"}
+        ]
+      }
+    }
+  },
+  methods:{
+    //点击重置按钮，重置登录表单
+    resetLoginForm(){
+      //打印实例对象
+      // console.log(this);
+      //重置表单
+      this.$refs.loginFormRef.resetFields();
+    },
+    //表单预验证
+    login(){
+      this.$refs.loginFormRef.validate(async (valid)=>{
+        console.log(valid)
+        if(!valid) return;
+        //发送表单数据,返回的是promise
+        const res = await this.$http.post('login',this.loginForm);
+        console.log(res);
+      })
+    }
+  },
+
 }
 </script>
 
