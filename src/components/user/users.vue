@@ -32,7 +32,7 @@
         <template slot-scope="scope">
 <!--          自定义插槽-->
 <!--          {{scope.row}}-->
-          <el-switch v-model="scope.row.mg_state"></el-switch>
+          <el-switch v-model="scope.row.mg_state" @change="userStateChange(scope.row)"></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180px">
@@ -66,6 +66,7 @@ export default {
   name: "users",
   data(){
     return{
+      //查询到的分页信息，根据这个显示分页
       queryInfo:{
         query:'',
         //当前的页数
@@ -112,9 +113,25 @@ export default {
     },
     //监听页码值改变的事件
     handleCurrentChange(newPage){
-      console.log(newPage)
+      // console.log(newPage)
       this.queryInfo.pagenum=newPage
       this.getUserList()
+    },
+    //监听switch开关的状态
+    userStateChange(userinfo){
+      console.log(userinfo)
+      // this.$http.put('users/:uid/state/:type')
+      this.$http.put(`users/${userinfo.id}/state/${userinfo.mg_state}`).then(res=>{
+        // console.log(res)
+        if(res.data.meta.status!==200){
+          //如果切换失败，为了确保状态不变，加入取反机制
+          userinfo.mg_state=!userinfo.mg_state
+          return this.$message.error("更新用户状态失败")
+        }else {
+          return this.$message.success("更新用户状态成功")
+        }
+      })
+
     }
   }
 }
