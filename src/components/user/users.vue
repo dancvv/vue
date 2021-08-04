@@ -13,12 +13,14 @@
 <!--    搜索与添加区域-->
     <el-row :gutter="20">
       <el-col :span="7">
-        <el-input placeholder="请输入内容"  class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+<!--        clearable 清除输入框-->
+<!--        @clear 清除事件，调用某个方法-->
+        <el-input placeholder="请输入内容" v-model="queryInfo.query" class="input-with-select" clearable @clear="getUserList">
+          <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="success" >添加用户</el-button>
+        <el-button type="success" @click="addDialogVisible = true">添加用户</el-button>
       </el-col>
     </el-row>
 <!--    将入边框和斑马条纹-->
@@ -58,6 +60,36 @@
         :total="total">
     </el-pagination>
   </el-card>
+<!--  添加用戶的對話框-->
+  <el-dialog
+      title="添加用戶"
+      :visible.sync="addDialogVisible"
+      width="50%"
+      @close="addDialogClosed">
+<!--    內容主體區-->
+<!--    添加表單-->
+    <el-form :model="addForm" :rules="addruleForm" ref="addFormRef"
+             label-width="70px">
+      <el-form-item label="用戶名" prop="username">
+<!--        此處報錯是由於加入的驗證規則addruleForm-->
+        <el-input v-model="addForm.username"></el-input>
+      </el-form-item>
+      <el-form-item label="密碼" prop="password">
+        <el-input v-model="addForm.password">de</el-input>
+      </el-form-item>
+      <el-form-item label="郵箱" prop="email">
+        <el-input v-model="addForm.email"></el-input>
+      </el-form-item>
+      <el-form-item label="手機" prop="mobile">
+        <el-input v-model="addForm.mobile"></el-input>
+      </el-form-item>
+    </el-form>
+<!--    底部區域-->
+    <span slot="footer" class="dialog-footer">
+    <el-button @click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addUser">确 定</el-button>
+  </span>
+  </el-dialog>
 </div>
 </template>
 
@@ -65,6 +97,24 @@
 export default {
   name: "users",
   data(){
+    //驗證郵箱
+    //使用正則表達式
+    // var checkEmail = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('年龄不能为空'));
+    //   }
+    //   setTimeout(() => {
+    //     if (!Number.isInteger(value)) {
+    //       callback(new Error('请输入数字值'));
+    //     } else {
+    //       if (value < 18) {
+    //         callback(new Error('必须年满18岁'));
+    //       } else {
+    //         callback();
+    //       }
+    //     }
+    //   }, 1000);
+    // };
     return{
       //查询到的分页信息，根据这个显示分页
       queryInfo:{
@@ -76,6 +126,36 @@ export default {
       },
       userList:[],
       total:0,
+      //控制添加用戶對話框的顯示與隱藏
+      addDialogVisible:false,
+    //  添加用戶的表單數據
+      addForm:{
+        username:'',
+        password: '',
+        email:'',
+        mobile:'',
+      },
+    //  添加表單的驗證規則對象
+      addruleForm:{
+        username:[
+          {required:true,message:'請輸入用戶名',trigger:'blur'},
+          {min:3,max:10,message: '用戶名的長度在3~10之間',trigger: 'blur'}
+        ],
+        password:[
+          {required:true,message:'請輸入密碼',trigger:'blur'},
+          {min:6,max:10,message: '用戶名的長度在6~10之間',trigger: 'blur'}
+        ],
+        email:[
+          {required:true,message:'請輸入郵箱',trigger:'blur'},
+          //  加入验证规则
+          // { validator: validatePass, trigger: 'blur' },
+          {min:6,max:10,message: '長度在6~10之間',trigger: 'blur'}
+        ],
+        mobile:[
+          {required:true,message:'請輸入手機號',trigger:'blur'},
+          {min:6,max:10,message: '長度在6~10之間',trigger: 'blur'}
+        ],
+      },
     }
   },
   created() {
@@ -131,8 +211,35 @@ export default {
           return this.$message.success("更新用户状态成功")
         }
       })
-
-    }
+    },
+    //监听添加用户对话框的关闭事件
+    addDialogClosed(){
+      //不添加这句话会导致每次打开的表单都是一样的
+      this.$refs.addFormRef.resetFields();
+    },
+    addUser(){
+      this.$refs.addFormRef.validate(valid=>{
+        // console.log(valid)
+        if(valid === true){
+        //  可以发起添加用户的网络请求
+          this.$http.post('users',this.addForm).then(res=>{
+            // console.log("状态码")
+            // console.log(res.data.meta.status)
+            if(res.data.meta.status!==201){
+              this.$message.error("添加用户失败")
+            }else {
+              this.$message.success("添加用户成功")
+              //隐藏添加用户的对话框
+              this.addDialogVisible=false
+            //  重新获取用户列表
+              this.getUserList()
+            }
+          })
+        }else {
+          return
+        }
+      })
+    },
   }
 }
 </script>
