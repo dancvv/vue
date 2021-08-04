@@ -61,6 +61,7 @@ export default {
         //发送表单数据,返回的是promise
         const {data:res} = await this.$http.post('login',this .loginForm);
         //打印接收的數據
+        console.log("axios接收到的数据")
         console.log(res);
         if(res.meta.status!==200){
           //判斷不成功，執行語句
@@ -68,7 +69,7 @@ export default {
           // return console.log("error");
           return this.$message.error('error message')
         }else {
-          console.log("success")
+          // console.log("success")
           //保存token
           window.sessionStorage.setItem("token",res.data.token);
           this.$router.push("/home");

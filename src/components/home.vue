@@ -106,13 +106,14 @@ export default {
       this.isCollapse = !this.isCollapse
     },
     // 保存链接的激活状态
-    saveNavState(activePath, item, subItem) {
+    saveNavState(activePath) {
       window.sessionStorage.setItem('activePath', activePath)
-      console.log("保存的activepath"+activePath)
+      // console.log("保存的activepath")
+      // console.log(activePath)
       this.activePath = activePath
       // 更新面包屑导航文字
-      this.breadcrumbItem = item.authName
-      this.breadcrumbSubItem = subItem.authName
+      // this.breadcrumbItem = item.authName
+      // this.breadcrumbSubItem = subItem.authName
     }
   }
 }

@@ -10,15 +10,17 @@ import axios from 'axios';
 //挂载
 Vue.prototype.$http=axios;
 //配置请求的根路径
-// axios.defaults.baseURL='http://timemeetyou.com:8889/api/private/v1/'
-axios.defaults.baseURL='http://www.ysqorz.top:8888/api/private/v1/'
+axios.defaults.baseURL='http://timemeetyou.com:8889/api/private/v1/'
+// axios.defaults.baseURL='http://www.ysqorz.top:8888/api/private/v1/'
 //通过接口获取菜单数据
-axios.interceptors.request.use(config=>{
-  console.log(config)
+axios.interceptors.request.use(config => {
+  //打印配置对象
+  // console.log("打印配置对象")
+  // console.log(config)
   //添加对象
-  config.headers.Authorization=window.sessionStorage.getItem('token')
+  config.headers.Authorization = window.sessionStorage.getItem('token')
   return config;
-})
+});
 
 //message自定義屬性，需要進行配置
 Vue.prototype.$message=Message
