@@ -4,7 +4,7 @@
     <el-header>
       <img src = "../assets/logo.png" alt = "" width="20px">
       <span id="header" v-show = "!isCollapse">后台管理系统</span>
-      <el-button>切换</el-button>
+      <el-button @click="pushHome">首页</el-button>
       <el-button type = "danger" @click = "logout" class="header-button">退出</el-button>
     </el-header>
     <el-container>
@@ -82,6 +82,11 @@ export default {
     this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
+    //回到首页
+    pushHome(){
+      this.$router.push('/home')
+    },
+    //登出主页面
     logout() {
       window.sessionStorage.clear()
       this.$router.push('/login')

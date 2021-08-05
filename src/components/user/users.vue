@@ -4,7 +4,7 @@
   <h3>用户列表组件</h3>
   <el-breadcrumb separator="/">
     <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-    <el-breadcrumb-item><a href="/">用户管理</a></el-breadcrumb-item>
+    <el-breadcrumb-item :to="{path:'/home'}">用户管理</el-breadcrumb-item>
     <el-breadcrumb-item>用户列表</el-breadcrumb-item>
   </el-breadcrumb>
 
@@ -317,6 +317,7 @@ export default {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return
         //  发起用户请求
+        //此处没有用this.then.catch结构，因为没有成功的构成
         const {data: res} = await this.$http.put('users/' + this.editForm.id, {
           email: this.editForm.email,
           mobile: this.editForm.mobile

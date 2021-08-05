@@ -23,3 +23,14 @@ html,body,#app{
 .el-pagination{
     margin-top: 15px;
 }
+
+/*给标签加样式*/
+.el-tag{
+    margin: 7px;
+}
+.bdtop{
+    border-top: 1px solid #eee;
+}
+.bdbottom{
+    border-top: 1px solid #eee;
+}
