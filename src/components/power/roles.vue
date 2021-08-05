@@ -69,12 +69,13 @@
         show-checkbox
         node-key="id"
         default-expand-all
+        ref="treeRef"
         :default-checked-keys="defKeys"
         :props="treeProps">
     </el-tree>
     <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="allocateRights">确 定</el-button>
   </span>
   </el-dialog>
 </div>
@@ -98,6 +99,8 @@ export default {
       },
       //默认选定的树
       defKeys:[],
+    //  当前即将分配权限的id
+      roleID:'',
     }
   },
   created() {
@@ -126,11 +129,11 @@ export default {
           message:'删除成功'
         });
         this.$http.delete(`roles/${role.id}/rights/${rightId}`).then(res=>{
-          console.log(role)
+          // console.log(role)
           // console.log(rightId)
-          console.log("打印res:")
-          console.log(res)
-          console.log("输出")
+          // console.log("打印res:")
+          // console.log(res)
+          // console.log("输出")
           this.$message.success("成功删除")
           //更新列表
           role.children=res.data
@@ -148,9 +151,10 @@ export default {
     },
   //  展示权限分配的对话框
     showSetRightDialog(role){
+      this.roleID=role.id
       //获取所有权限的数据
       this.$http.get('rights/tree').then(res=>{
-        console.log(res)
+        // console.log(res)
         if(res.data.meta.status!==200){
           console.log("保存失败")
         }else{
@@ -176,7 +180,27 @@ export default {
     setRightDialogClosed(){
       //每次关闭的时候都将其设置为空，防止下次重复调用
       this.defKeys=[]
-      console.log("diaoyong"+this.defKeys)
+      // console.log("diaoyong"+this.defKeys)
+    },
+  //  为角色分配权限
+    allocateRights(){
+      const keys=[
+          //获取所有的key
+          ...this.$refs.treeRef
+              .getCheckedKeys(),
+          ...this.$refs.treeRef
+              .getHalfCheckedKeys()
+      ]
+      //此处拼接错误是由于上面的位置获取的是节点数据
+      //getHalfCheckedKeys，不是当前这个函数
+      const idStr=keys.join(',')
+      console.log(this.roleID)
+      this.$http.post(`roles/${this.roleID}/rights`,{rid:idStr}).then(res=>{
+        console.log("选择的id值")
+        console.log(res)
+      })
+      // console.log(keys)
+      this.setRightDialogVisible=false
     }
   }
 }
