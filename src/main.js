@@ -2,6 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import ElementUI, {Message} from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import ZkTable from "vue-table-with-tree-grid"
+//need to install the plugin
+//npm i vue-table-with-tree-grid -S
+
+//config the treetable
+Vue.use(ZkTable)
 
 import router from "./router";
 import './assets/gloabl.css';
