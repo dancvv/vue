@@ -47,9 +47,8 @@
           <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeById(scope.row.id)"></el-button>
 <!--          分配-->
           <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-            <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+            <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
           </el-tooltip>
-
         </template>
       </el-table-column>
     </el-table>
@@ -116,6 +115,27 @@
     <el-button type="primary" @click="editUserInfor">确 定</el-button>
   </span>
   </el-dialog>
+
+  <!--  修改角色属性的对话框-->
+  <el-dialog
+      title="提示"
+      :visible.sync="setRoleDialogVisible"
+      width="50%">
+    <div>
+      <p>当前的用户：{{userInfo.username}}</p>
+      <p>当前的角色：{{userInfo.role_name}}</p>
+      <p>分配新角色：
+        <el-select v-model="selectRoleId" placeholder="请选择">
+          <el-option v-for="item in rolesList" :key="item.id"
+                     :label="item.roleName" :value="item.id"></el-option>
+        </el-select>
+      </p><br>
+    </div>
+    <span slot="footer" class="dialog-footer">
+    <el-button @click="deleteRoleInfo">取 消</el-button>
+    <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+  </span>
+  </el-dialog>
 </div>
 </template>
 
@@ -148,7 +168,7 @@ export default {
         //当前的页数
         pagenum:1,
         //当前每页显示多少条
-        pagesize:2
+        pagesize:5
       },
       userList:[],
       total:0,
@@ -173,17 +193,17 @@ export default {
         ],
         password:[
           {required:true,message:'請輸入密碼',trigger:'blur'},
-          {min:6,max:10,message: '用戶名的長度在6~10之間',trigger: 'blur'}
+          {min:6,max:20,message: '用戶名的長度在6~20之間',trigger: 'blur'}
         ],
         email:[
           {required:true,message:'請輸入郵箱',trigger:'blur'},
           //  加入验证规则
           // { validator: validatePass, trigger: 'blur' },
-          {min:6,max:10,message: '長度在6~10之間',trigger: 'blur'}
+          {min:6,max:20,message: '長度在6~20之間',trigger: 'blur'}
         ],
         mobile:[
           {required:true,message:'請輸入手機號',trigger:'blur'},
-          {min:6,max:10,message: '長度在6~10之間',trigger: 'blur'}
+          {min:6,max:12,message: '長度在6~12之間',trigger: 'blur'}
         ],
       },
     //  修改表单的验证对象
@@ -194,7 +214,7 @@ export default {
         ],
         password:[
           {required:true,message:'請輸入密碼',trigger:'blur'},
-          {min:6,max:10,message: '用戶名的長度在6~10之間',trigger: 'blur'}
+          {min:6,max:20,message: '用戶名的長度在6~20之間',trigger: 'blur'}
         ],
         email:[
           {required:true,message:'請輸入郵箱',trigger:'blur'},
@@ -204,9 +224,18 @@ export default {
         ],
         mobile:[
           {required:true,message:'請輸入手機號',trigger:'blur'},
-          {min:6,max:13,message: '長度在6~10之間',trigger: 'blur'}
+          {min:6,max:12,message: '長度在6~12之間',trigger: 'blur'}
         ],
-    }
+    },
+    //  控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible:false,
+    //  需要分配角色的用户信息
+      userInfo:{},
+      //当前用户的角色信息列表
+      rolesList:[],
+    //  已选中的角色id值
+    //  通过:value 函数绑定到v-model中，实现双向绑定
+      selectRoleId:[]
     }
   },
   created() {
@@ -214,6 +243,7 @@ export default {
     console.log("print")
   },
   methods:{
+    //获取用户列表
     async getUserList(){
       // const {data:res} = this.$http.get('users',{params:this.queryInfo})
       this.$http.get('users',{params:this.queryInfo}).then(res=>{
@@ -245,6 +275,7 @@ export default {
     //监听页码值改变的事件
     handleCurrentChange(newPage){
       // console.log(newPage)
+      // 更新页码
       this.queryInfo.pagenum=newPage
       this.getUserList()
     },
@@ -268,6 +299,7 @@ export default {
       //不添加这句话会导致每次打开的表单都是一样的
       this.$refs.addFormRef.resetFields();
     },
+    //添加用户
     addUser(){
       this.$refs.addFormRef.validate(valid=>{
         // console.log(valid)
@@ -347,9 +379,9 @@ export default {
           type:'success',
           message:'删除成功'
         });
-        this.$http.delete('users/'+id).then(()=>{
+        this.$http.delete('users/'+id).then((res)=>{
           // console.log("删除成功：")
-          // console.log(res)
+          console.log(res)
           // 删除成功之后获取新的列表
           this.getUserList()
         })
@@ -361,6 +393,55 @@ export default {
         })
       })
     },
+    //显示分配角色的对话框
+    setRole(userInfo){
+      this.userInfo=userInfo
+      //当前的用户信息
+      // console.log("当前的用户信息")
+      // console.log(userInfo)
+      //在展示用户框之前，获取所有角色的列表
+      this.$http.get('roles').then(res=>{
+        //获取角色信息
+        // console.log("获取角色信息")
+        // console.log(res)
+        if(res.data.meta.status!==200){
+          return this.$message.error("获取角色失败")
+        }else{
+          // this.$message.success("获取角色成功")
+          //获取角色数据
+          this.rolesList=res.data.data
+          // console.log(res.data.data)
+        }
+      })
+      this.setRoleDialogVisible=true
+    },
+    //保存分配的角色信息
+    async saveRoleInfo() {
+      // console.log(this.selectRoleId)
+      if (!this.selectRoleId) {
+        return this.$message.error('请选择要分配的角色')
+      }
+      const {data: res} = await this.$http.put(`users/${this.userInfo.id}/role`, {
+        rid: this.selectRoleId
+      })
+      // console.log("接受状态")
+      // console.log(res)
+      if (res.meta.status !== 200) {
+        // console.log("更新失败")
+        return this.$message.error('更新角色失败！')
+      }
+      this.$message.success('更新角色成功！')
+      //更新当前列表
+      await this.getUserList()
+      this.setRoleDialogVisible=false
+    },
+    //删除的保存角色时的残留信息
+    deleteRoleInfo(){
+      this.selectRoleId=''
+      //保证用户角色信息不会流传到下一个
+      this.userInfo={}
+      this.setRoleDialogVisible=false
+    }
   }
 }
 </script>
