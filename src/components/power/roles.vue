@@ -115,7 +115,32 @@ export default {
     },
     //根据id删除权限
     async removeRightByID(role, rightId) {
+      const confirmType=await this.$confirm('此操作将永久删除该权限，是否继续？','提示',{
+        confirmButtonText:'确定',
+        cancelButtonText:'取消',
+        type:'warning'
+      }).catch(err=>err)
+      // 点击确定 返回值为：confirm
+      // 点击取消 返回值为： cancel
+      if (confirmType !== 'confirm') {
+        return this.$message.info('已取消权限删除')
+      }else {
+        const {data: res}=await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+        console.log("获取到的值")
+        console.log(res)
+        console.log(res.meta.status)
+        if (res.meta.status!==200){
+          this.$message.error("删除失败")
+        }else {
+          this.$message.success("删除成功")
+          //此处易出错，返回给的是其children属性
+          role.children = res.data
+        }
+      }
 
+      /*
+      我自己的写法，采用this.then.catch结构，但是存在一些问题
+      */
       //  弹框是否确认删除
       //   this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
       //     confirmButtonText: '确定',
@@ -154,27 +179,32 @@ export default {
       //     message:'已取消删除'
       //   });
       // });
-      const confirmResult = await this.$confirm(
-          '此操作将永久删除该权限, 是否继续?',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-      ).catch(err => err)
-      // 点击确定 返回值为：confirm
-      // 点击取消 返回值为： cancel
-      if (confirmResult !== 'confirm') {
-        return this.$message.info('已取消权限删除')
-      }
-      const {data: res} = await this.$http.delete(
-          `roles/${role.id}/rights/${rightId}`
-      )
-      if (res.meta.status !== 200) {
-        return this.$message.error('删除权限失败！')
-      }
-      role.children = res.data
+
+      /*
+      老师采用的写法，采用异步操作
+       */
+
+      // const confirmResult = await this.$confirm(
+      //     '此操作将永久删除该权限, 是否继续?',
+      //     '提示',
+      //     {
+      //       confirmButtonText: '确定',
+      //       cancelButtonText: '取消',
+      //       type: 'warning'
+      //     }
+      // ).catch(err => err)
+      // // 点击确定 返回值为：confirm
+      // // 点击取消 返回值为： cancel
+      // if (confirmResult !== 'confirm') {
+      //   return this.$message.info('已取消权限删除')
+      // }
+      // const {data: res} = await this.$http.delete(
+      //     `roles/${role.id}/rights/${rightId}`
+      // )
+      // if (res.meta.status !== 200) {
+      //   return this.$message.error('删除权限失败！')
+      // }
+      // role.children = res.data
       //   不建议使用
       // this.getRolesList()
     },
@@ -226,7 +256,7 @@ export default {
       //getHalfCheckedKeys，不是当前这个函数
       const idStr=keys.join(',')
       console.log(this.roleID)
-      this.$http.post(`roles/${this.roleID}/rights`,{rid:idStr}).then(res=>{
+      this.$http.post(`roles/${this.roleID}/rights`,{rids:idStr}).then(res=>{
         console.log("选择的id值")
         console.log(res)
       })
