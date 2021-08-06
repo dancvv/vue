@@ -34,7 +34,7 @@
                   <i class="el-icon-caret-right"></i>
                 </el-col>
                 <el-col :span="18">
-                  <el-tag type="warning" v-for="(item3) in item2.children" :key="item3.id" closable @close="removeRightByID(scope.row,item3.id)">{{item3.authName}}</el-tag>
+                  <el-tag type="warning" v-for="(item3) in item2.children" :key="item3.id" closable @close="removeRightByID(scope.row,item3.id)">{{item3.authName}}{{item3.id}}</el-tag>
                 </el-col>
               </el-row>
             </el-col>
@@ -114,40 +114,69 @@ export default {
       })
     },
     //根据id删除权限
-    removeRightByID(role,rightId){
+    async removeRightByID(role, rightId) {
 
-    //  弹框是否确认删除
-      this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-        //  点击确定之后，执行下面的操作
-      }).then(()=>{
-        // console.log(role)
-        this.$message({
-          type:'success',
-          message:'删除成功'
-        });
-        this.$http.delete(`roles/${role.id}/rights/${rightId}`).then(res=>{
-          // console.log(role)
-          // console.log(rightId)
-          // console.log("打印res:")
-          // console.log(res)
-          // console.log("输出")
-          this.$message.success("成功删除")
-          //更新列表
-          role.children=res.data
-          // this.getRolesList()
-        }).catch(()=>{
-          this.$message.error("删除失败")
-        })
-        //  点击取消之后，执行下面的操作
-      }).catch(()=>{
-        this.$message({
-          type:'info',
-          message:'已取消删除'
-        });
-      });
+      //  弹框是否确认删除
+      //   this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning'
+      //     //  点击确定之后，执行下面的操作
+      //   }).then(()=>{
+      //     // console.log(role)
+      //     this.$message({
+      //       type:'success',
+      //       message:'删除成功'
+      //     });
+      //     this.$http.delete(`roles/${role.id}/rights/${rightId}`).then(res=>{
+      //       // console.log(role)
+      //       // console.log(rightId)
+      //       if(res.meta.status!==200){
+      //         return this.$message.error('delete success')
+      //       }else{
+      //         console.log("打印res:")
+      //         console.log(res)
+      //         // console.log("输出")
+      //         this.$message.success("成功删除")
+      //         //更新列表
+      //         role.children=res.data
+      //         console.log("output the deleted data")
+      //         console.log(role)
+      //       }
+      // this.getRolesList()
+      //   }).catch(()=>{
+      //     this.$message.error("删除失败")
+      //   })
+      //   //  点击取消之后，执行下面的操作
+      // }).catch(()=>{
+      //   this.$message({
+      //     type:'info',
+      //     message:'已取消删除'
+      //   });
+      // });
+      const confirmResult = await this.$confirm(
+          '此操作将永久删除该权限, 是否继续?',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+      ).catch(err => err)
+      // 点击确定 返回值为：confirm
+      // 点击取消 返回值为： cancel
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已取消权限删除')
+      }
+      const {data: res} = await this.$http.delete(
+          `roles/${role.id}/rights/${rightId}`
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除权限失败！')
+      }
+      role.children = res.data
+      //   不建议使用
+      // this.getRolesList()
     },
   //  展示权限分配的对话框
     showSetRightDialog(role){
@@ -160,6 +189,8 @@ export default {
         }else{
           //获取到的数据，保存
           this.rightsLIst=res.data.data
+          //output the list
+          // console.log("log the list")
           // console.log(this.rightsLIst)
         }
       })
