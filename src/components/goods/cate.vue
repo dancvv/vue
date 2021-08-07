@@ -16,7 +16,13 @@
         <zk-table
             :data="catelist"
             :columns="columns"
-            :selection-type="false" :expand-type="false" show-index index-text="NO index" border :show-row-hover="false"></zk-table>
+            :selection-type="false" :expand-type="false"
+            show-index index-text="NO index" border :show-row-hover="false">
+          <template slot="isok" slot-scope="scope">
+            <i class="el-icon-success" v-if></i>
+            <i class="el-icon-error"></i>
+          </template>
+        </zk-table>
 
 <!--        分类区-->
       </el-col>
@@ -42,7 +48,12 @@ export default {
 
       columns:[{
         label:'category title',
-        prop:'cat_name'
+        prop:'cat_name',
+      },{
+        label: '是否有效',
+        type:'template',
+        //表示当前这一列使用的模板名称
+        template:'isok'
       }
       ]
     }
