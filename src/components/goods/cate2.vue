@@ -254,6 +254,7 @@ export default {
           return this.$message.error('添加分类失败！')
         }
         console.log(res)
+        console.log(this.addCateForm)
         this.$message.success('添加分类成功！')
         this.getCateList()
         this.addCateDialogVisible = false

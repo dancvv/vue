@@ -20,7 +20,7 @@ const router=new Router({
                 {path:'/rights',component:rights},
                 {path:'/roles',component:roles},
                 {path:'/categor',component:cate},
-                {path:'/categories',component:cate2},
+                {path:'/categories',component:cate},
             ]},
 
 
