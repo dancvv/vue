@@ -76,8 +76,8 @@
 <!--        此處報錯是由於加入的驗證規則addruleForm-->
         <el-input v-model="addForm.username"></el-input>
       </el-form-item>
-      <el-form-item label="密碼" prop="password">
-        <el-input v-model="addForm.password">de</el-input>
+      <el-form-item label="密碼" prop="password" >
+        <el-input v-model="addForm.password"></el-input>
       </el-form-item>
       <el-form-item label="郵箱" prop="email">
         <el-input v-model="addForm.email"></el-input>
