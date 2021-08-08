@@ -54,7 +54,7 @@
 <!--  添加分类的对话框-->
   <el-dialog
       :visible.sync="addDialogVisible"
-      width="50%">
+      width="50%" @close="addCateDialogClosed">
 <!--    添加分类的表单-->
     <el-form :model="addCateForm" :rules="addCateFormRules"
     ref="addCateFormRef" label-width="100px">
@@ -65,11 +65,11 @@
 <!--        options:指定数据源-->
 <!--        v-model="value"这个value指向props的value-->
         <el-cascader
-            v-model="value"
+            v-model="selectedKeys"
             :options="parentCateLIst"
             :props="{ expandTrigger: 'hover' ,value:'cat_id',label:'cat_name',children:'children' }"
             @change="ParentCateChange"
-            :clearable="true"></el-cascader>
+            filterable clearable></el-cascader>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -137,7 +137,7 @@ export default {
       //父级分类的列表
       parentCateLIst:[],
       //级联选择器v-model的值
-      value:[],
+      selectedKeys:[],
       //选择项可以有的值
       // cascaderList:[{
       //   value:'',
@@ -195,17 +195,18 @@ export default {
 
     },
     //选择项发生变化时触发这个函数
-    ParentCateChange(value){
+    ParentCateChange(){
       // console.log(this.parentCateLIst)
-      console.log(value.length)
+      console.log(this.selectedKeys.length)
     //  如果v-model中的值length大于0，证明选中的父级分类
     //  反之，则没有选中任何分类
-      if(value.length>0){
+      if(this.selectedKeys.length>0){
         //父级id
-        this.addCateForm.cat_id=value[value.length-1]
+        this.addCateForm.cat_pid=this.selectedKeys[this.selectedKeys.length-1]
       //为当前分类的等级赋值
-      this.addCateForm.cat_level=value.length
-      return }else {
+      this.addCateForm.cat_level=this.selectedKeys.length
+      return 0
+      }else {
         this.addCateForm.cat_id=0
         this.addCateForm.cat_level=0
       }
@@ -214,7 +215,29 @@ export default {
   //  添加新的分类
     addCate(){
       console.log(this.addCateForm)
-      this.addDialogVisible = false
+      this.$refs.addCateFormRef.validate(async valid => {
+        if (!valid) return
+        const {data: res} = await this.$http.post('categories', this.addCateForm)
+        console.log(res)
+        console.log(this.addCateForm)
+        if(res.meta.status!==201){
+           return this.$message.error('添加分类失败')
+         }
+        this.$message.success('添加分类成功')
+
+        await this.getCateList()
+        this.addDialogVisible = false
+      })
+
+    },
+  //  监听对话框的关闭事件，重置表单数据
+    addCateDialogClosed(){
+      // this.selectedKeys=[]
+      // this.addCateForm.cat_id=0
+      // this.addCateForm.cat_level=0
+      // // this.addCate.cat_name=0
+      // this.$refs.addCateFormRef.resetFields()
+
     }
   }
 }
