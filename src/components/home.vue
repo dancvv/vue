@@ -104,7 +104,7 @@ export default {
       }
       // console.log('获取左侧所有的菜单------')
 
-      console.log("左侧的菜单"+res)
+      console.log(res)
     },
     // 点击按钮，切换菜单的折叠与展开
     toggleCollapse() {

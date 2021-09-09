@@ -61,6 +61,28 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
+
+    <el-popover
+        ref="popover"
+        placement="right"
+        title="标题"
+        width="200"
+        trigger="click"
+        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+    </el-popover>
+
+    <el-popover
+        ref="popover-click"
+        placement="bottom"
+        title="标题"
+        width="200"
+        trigger="click"
+        content="这是click 激活。"
+    >
+    </el-popover>
+    <el-button v-popover:popover-click type="primary">click 激活</el-button>
+    <el-button v-popover:popover>focus 激活</el-button>
+
   </el-card>
 <!--  添加用戶的對話框-->
   <el-dialog
@@ -426,7 +448,7 @@ export default {
       })
       // console.log("接受状态")
       // console.log(res)
-      if (res.meta.status !== 200) {
+      if (res.status !== 200) {
         // console.log("更新失败")
         return this.$message.error('更新角色失败！')
       }
